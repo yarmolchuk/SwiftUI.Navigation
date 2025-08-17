@@ -11,7 +11,12 @@ import SwiftUI
 struct SwiftUI_NavigationApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(
+                viewModel: .init(
+                    inventoryViewModel: .init(inventory: []),
+                    selectedTab: .one
+                )
+            )
         }
     }
 }

@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		04D74B152E4D1AAA0082F3F6 /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 04D74B142E4D1AAA0082F3F6 /* IdentifiedCollections */; };
+		04D74B1E2E4F80AA0082F3F6 /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 04D74B1D2E4F80AA0082F3F6 /* CasePaths */; };
+		04D74B202E4F80AA0082F3F6 /* CasePathsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 04D74B1F2E4F80AA0082F3F6 /* CasePathsCore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		04D74AEB2E4A6CEA0082F3F6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +58,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04D74B152E4D1AAA0082F3F6 /* IdentifiedCollections in Frameworks */,
+				04D74B1E2E4F80AA0082F3F6 /* CasePaths in Frameworks */,
+				04D74B202E4F80AA0082F3F6 /* CasePathsCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +121,9 @@
 			);
 			name = SwiftUI.Navigation;
 			packageProductDependencies = (
+				04D74B142E4D1AAA0082F3F6 /* IdentifiedCollections */,
+				04D74B1D2E4F80AA0082F3F6 /* CasePaths */,
+				04D74B1F2E4F80AA0082F3F6 /* CasePathsCore */,
 			);
 			productName = SwiftUI.Navigation;
 			productReference = 04D74ADD2E4A6CE90082F3F6 /* SwiftUI.Navigation.app */;
@@ -195,6 +207,10 @@
 			);
 			mainGroup = 04D74AD42E4A6CE90082F3F6;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				04D74B132E4D1AAA0082F3F6 /* XCRemoteSwiftPackageReference "swift-identified-collections" */,
+				04D74B1C2E4F80AA0082F3F6 /* XCRemoteSwiftPackageReference "swift-case-paths" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 04D74ADE2E4A6CE90082F3F6 /* Products */;
 			projectDirPath = "";
@@ -550,6 +566,43 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		04D74B132E4D1AAA0082F3F6 /* XCRemoteSwiftPackageReference "swift-identified-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-identified-collections";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.1;
+			};
+		};
+		04D74B1C2E4F80AA0082F3F6 /* XCRemoteSwiftPackageReference "swift-case-paths" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-case-paths";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.7.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		04D74B142E4D1AAA0082F3F6 /* IdentifiedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 04D74B132E4D1AAA0082F3F6 /* XCRemoteSwiftPackageReference "swift-identified-collections" */;
+			productName = IdentifiedCollections;
+		};
+		04D74B1D2E4F80AA0082F3F6 /* CasePaths */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 04D74B1C2E4F80AA0082F3F6 /* XCRemoteSwiftPackageReference "swift-case-paths" */;
+			productName = CasePaths;
+		};
+		04D74B1F2E4F80AA0082F3F6 /* CasePathsCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 04D74B1C2E4F80AA0082F3F6 /* XCRemoteSwiftPackageReference "swift-case-paths" */;
+			productName = CasePathsCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 04D74AD52E4A6CE90082F3F6 /* Project object */;
 }
