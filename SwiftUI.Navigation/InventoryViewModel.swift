@@ -53,13 +53,36 @@ final class InventoryViewModel: ObservableObject {
     }
     
     private func bind(itemRowViewModel: ItemRowViewModel) {
-        itemRowViewModel.onDelete = {
-            [weak self, id = itemRowViewModel.id] in
-            
-            _ = withAnimation {
-                self?.inventory.remove(id: id)
+        itemRowViewModel.onDelete = { [weak self, item = itemRowViewModel.item] in
+            withAnimation {
+                self?.delete(item: item)
             }
         }
-        inventory.append(itemRowViewModel)
+        itemRowViewModel.onDuplicate = { [weak self] item in
+            withAnimation {
+                self?.add(item: item)
+            }
+        }
+        self.inventory.append(itemRowViewModel)
     }
+}
+
+struct InventoryView_Previews: PreviewProvider {
+  static var previews: some View {
+    let keyboard = Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
+    
+    NavigationView {
+      InventoryView(
+        viewModel: .init(
+          inventory: [
+            .init(item: keyboard),
+            .init(item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))),
+            .init(item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))),
+            .init(item: Item(name: "Headphones", color: .green, status: .outOfStock(isOnBackOrder: false))),
+          ],
+          itemToAdd: nil
+        )
+      )
+    }
+  }
 }

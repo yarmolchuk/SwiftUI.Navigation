@@ -12,7 +12,7 @@ struct Item: Equatable, Identifiable {
     var name: String
     var color: Color?
     var status: Status
-        
+    
     enum Status: Equatable {
         case inStock(quantity: Int)
         case outOfStock(isOnBackOrder: Bool)

@@ -117,3 +117,17 @@ extension View {
         }
     }
 }
+
+extension View {
+    func popover<Value, Content>(
+        unwrap item: Binding<Value?>,
+        @ViewBuilder content: @escaping (Binding<Value>) -> Content
+    ) -> some View
+    where Value: Identifiable, Content: View {
+        popover(item: item) { _ in
+            if let item = Binding(unwrap: item) {
+                content(item)
+            }
+        }
+    }
+}

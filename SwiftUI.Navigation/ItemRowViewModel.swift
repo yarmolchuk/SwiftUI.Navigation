@@ -8,26 +8,101 @@
 import Foundation
 
 final class ItemRowViewModel: Identifiable, ObservableObject {
-    @Published var deleteItemAlertIsPresented: Bool
     @Published var item: Item
-    
-    var onDelete: () -> Void = {}
-    
+    @Published var route: Route?
+
+    enum Route: Equatable {
+      case deleteAlert
+      case duplicate(Item)
+      case edit(Item)
+    }
     var id: Item.ID { self.item.id }
-    
-    init(
-        deleteItemAlertIsPresented: Bool = false,
-        item: Item
-    ) {
-        self.deleteItemAlertIsPresented = deleteItemAlertIsPresented
+
+    var onDelete: () -> Void = { }
+    var onDuplicate: (Item) -> Void = { _ in }
+
+    init(item: Item, route: Route? = nil) {
         self.item = item
+        self.route = route
     }
     
     func deleteButtonTapped() {
-        self.deleteItemAlertIsPresented = true
+        route = .deleteAlert
     }
     
     func deleteConfirmationButtonTapped() {
-        self.onDelete()
+        onDelete()
+    }
+    
+    func editButtonTapped() {
+        route = .edit(item)
+    }
+    
+    func edit(item: Item) {
+        self.item = item
+        self.route = nil
+    }
+    
+    func cancelButtonTapped() {
+        route = nil
+    }
+    
+    func duplicateButtonTapped() {
+        route = .duplicate(item.duplicate())
+    }
+    
+    func duplicate(item: Item) {
+       onDuplicate(item)
+       route = nil
+    }
+}
+
+extension Item {
+    func duplicate() -> Self {
+        .init(name: name, color: color, status: status)
+    }
+}
+
+import SwiftUI
+import CasePaths
+
+extension Binding {
+  func isPresent<Enum, Case>(_ casePath: AnyCasePath<Enum, Case> ) -> Binding<Bool> where Value == Enum? {
+    .init(
+      get: {
+        if let wrappedValue = self.wrappedValue,
+           casePath.extract(from: wrappedValue) != nil {
+          return true
+        } else {
+          return false
+        }
+      },
+      set: { isPresented in
+        if !isPresented {
+          self.wrappedValue = nil
+        }
+      }
+    )
+  }
+}
+
+extension Binding {
+    func `case`<Enum, Case>(_ casePath: AnyCasePath<Enum, Case>) -> Binding<Case?> where Value == Enum? {
+        Binding<Case?>(
+            get: {
+                guard
+                    let wrappedValue = self.wrappedValue,
+                    let `case` = casePath.extract(from: wrappedValue)
+                else { return nil }
+                return `case`
+            },
+            set: { `case` in
+                if let `case` = `case` {
+                    self.wrappedValue = casePath.embed(`case`)
+                } else {
+                    self.wrappedValue = nil
+                }
+            }
+        )
     }
 }

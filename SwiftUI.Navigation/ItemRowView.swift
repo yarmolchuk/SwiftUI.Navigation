@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CasePaths
 
 struct ItemRowView: View {
     @ObservedObject var viewModel: ItemRowViewModel
@@ -32,6 +33,16 @@ struct ItemRowView: View {
                     .border(Color.black, width: 1)
             }
             
+            Button(action: { self.viewModel.duplicateButtonTapped() }) {
+                Image(systemName: "square.fill.on.square.fill")
+            }
+            .padding(.leading)
+            
+            Button(action: { self.viewModel.editButtonTapped() }) {
+                Image(systemName: "pencil")
+            }
+            .padding(.leading)
+            
             Button(action: { self.viewModel.deleteButtonTapped() }) {
                 Image(systemName: "trash.fill")
             }
@@ -41,7 +52,7 @@ struct ItemRowView: View {
         .foregroundColor(self.viewModel.item.status.isInStock ? nil : Color.gray)
         .alert(
             self.viewModel.item.name,
-            isPresented: self.$viewModel.deleteItemAlertIsPresented,
+            isPresented: self.$viewModel.route.isPresent(/ItemRowViewModel.Route.deleteAlert),
             actions: {
                 Button("Delete", role: .destructive) {
                     self.viewModel.deleteConfirmationButtonTapped()
@@ -51,5 +62,42 @@ struct ItemRowView: View {
                 Text("Are you sure you want to delete this item?")
             }
         )
+        .sheet(unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.edit)) { $item in
+            NavigationView {
+                ItemView(item: $item)
+                    .navigationBarTitle("Edit")
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Cancel") {
+                                self.viewModel.cancelButtonTapped()
+                            }
+                        }
+                        ToolbarItem(placement: .primaryAction) {
+                            Button("Save") {
+                                self.viewModel.edit(item: item)
+                            }
+                        }
+                    }
+            }
+        }
+        .popover(unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.duplicate)) { $item in
+            NavigationView {
+                ItemView(item: $item)
+                    .navigationBarTitle("Duplicate")
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Cancel") {
+                                self.viewModel.cancelButtonTapped()
+                            }
+                        }
+                        ToolbarItem(placement: .primaryAction) {
+                            Button("Add") {
+                                self.viewModel.duplicate(item: item)
+                            }
+                        }
+                    }
+            }
+            .frame(minWidth: 300, minHeight: 500)
+        }
     }
 }
