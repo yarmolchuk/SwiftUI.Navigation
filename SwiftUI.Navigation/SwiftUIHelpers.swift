@@ -42,6 +42,21 @@ extension View {
             message: message
         )
     }
+    
+    func alert<A: View, M: View, Enum, Case>(
+        title: (Case) -> Text,
+        unwrap data: Binding<Enum?>,
+        case casePath: AnyCasePath<Enum, Case>,
+        @ViewBuilder actions: @escaping (Case) -> A,
+        @ViewBuilder message: @escaping (Case) -> M
+    ) -> some View {
+        alert(
+            title: title,
+            presenting: data.case(casePath),
+            actions: actions,
+            message: message
+        )
+    }
 }
 
 extension View {
@@ -60,6 +75,21 @@ extension View {
             ),
             titleVisibility: titleVisibility,
             presenting: data.wrappedValue,
+            actions: actions,
+            message: message
+        )
+    }
+    
+    func confirmationDialog<A: View, M: View, Enum, Case>(
+        title: (Case) -> Text,
+        unwrap data: Binding<Enum?>,
+        case casePath: AnyCasePath<Enum, Case>,
+        @ViewBuilder actions: @escaping (Case) -> A,
+        @ViewBuilder message: @escaping (Case) -> M
+    ) -> some View {
+        confirmationDialog(
+            title: title,
+            presenting: data.case(casePath),
             actions: actions,
             message: message
         )
@@ -105,6 +135,18 @@ extension Binding {
     }
 }
 
+extension Binding {
+    func didSet(_ callback: @escaping (Value) -> Void) -> Self {
+        .init(
+            get: { self.wrappedValue },
+            set: {
+                self.wrappedValue = $0
+                callback($0)
+            }
+        )
+    }
+}
+
 extension View {
     func sheet<Value, Content>(
         unwrap optionalValue: Binding<Value?>,
@@ -112,6 +154,18 @@ extension View {
     ) -> some View where Value: Identifiable, Content: View {
         sheet(item: optionalValue) { _ in
             if let value = Binding(unwrap: optionalValue) {
+                content(value)
+            }
+        }
+    }
+    
+    func sheet<Enum, Case, Content>(
+        unwrap item: Binding<Enum?>,
+        `case` casePath: AnyCasePath<Enum, Case>,
+        @ViewBuilder content: @escaping (Binding<Case>) -> Content
+    ) -> some View where Case: Identifiable, Content: View {
+        sheet(item: item.case(casePath)) { _ in
+            if let value = Binding(unwrap: item.case(casePath)) {
                 content(value)
             }
         }
@@ -129,5 +183,55 @@ extension View {
                 content(item)
             }
         }
+    }
+    
+    func popover<Enum, Case, Content>(
+        unwrap item: Binding<Enum?>,
+        `case` casePath: AnyCasePath<Enum, Case>,
+        @ViewBuilder content: @escaping (Binding<Case>) -> Content
+    ) -> some View where Case: Identifiable, Content: View {
+        popover(item: item.case(casePath)) { _ in
+            if let value = Binding(unwrap: item.case(casePath)) {
+                content(value)
+            }
+        }
+    }
+}
+
+extension NavigationLink {
+    init<Value, WrappedDestination>(
+        unwrap optionalValue: Binding<Value?>,
+        onNavigate: @escaping (Bool) -> Void,
+        @ViewBuilder destination: @escaping (Binding<Value>) -> WrappedDestination,
+        @ViewBuilder label: @escaping () -> Label
+    )
+    where Destination == WrappedDestination?
+    {
+        self.init(
+            isActive: optionalValue.isPresent().didSet(onNavigate),
+            destination: {
+                if let value = Binding(unwrap: optionalValue) {
+                    destination(value)
+                }
+            },
+            label: label
+        )
+    }
+    
+    init<Enum, Case, WrappedDestination>(
+        unwrap optionalValue: Binding<Enum?>,
+        case casePath: AnyCasePath<Enum, Case>,
+        onNavigate: @escaping (Bool) -> Void,
+        @ViewBuilder destination: @escaping (Binding<Case>) -> WrappedDestination,
+        @ViewBuilder label: @escaping () -> Label
+    )
+    where Destination == WrappedDestination?
+    {
+        self.init(
+            unwrap: optionalValue.case(casePath),
+            onNavigate: onNavigate,
+            destination: destination,
+            label: label
+        )
     }
 }

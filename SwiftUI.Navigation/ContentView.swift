@@ -16,20 +16,14 @@ struct ContentView: View {
     
     var body: some View {
         TabView(selection: $viewModel.selectedTab) {
-            VStack {
-                Text("One")
-                Button("Go to 2nd tab") {
-                    viewModel.selectedTab = .inventory
-                }
-            }
-            .tabItem { Text("One") }
-            .tag(Tab.one)
-            
-
+            Text("One")
+                .tabItem { Text("One") }
+                .tag(Tab.one)
+        
             NavigationView {
                 InventoryView(viewModel: viewModel.inventoryViewModel)
             }
-            .tabItem { Text("Two") }
+            .tabItem { Text("Inventory") }
             .tag(Tab.inventory)
 
             Text("Three")
@@ -40,9 +34,22 @@ struct ContentView: View {
 }
 
 #Preview {
+    let keyboard = Item(
+        name: "Keyboard",
+        color: .blue,
+        status: .inStock(quantity: 100)
+    )
+    
     ContentView(
         viewModel: .init(
-            inventoryViewModel: .init(inventory: []),
+            inventoryViewModel: .init(
+                inventory: [
+                    .init(item: keyboard)
+                ],
+                route: .add(
+                    Item(name: "MacBook 14", color: nil, status: .inStock(quantity: 1))
+                )
+            ),
             selectedTab: .inventory
         )
     )

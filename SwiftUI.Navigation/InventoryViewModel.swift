@@ -6,18 +6,24 @@
 //
 
 import IdentifiedCollections
+import CasePaths
 import SwiftUI
 
 final class InventoryViewModel: ObservableObject {
     @Published var inventory: IdentifiedArrayOf<ItemRowViewModel>
-    @Published var itemToAdd: Item?
+    @Published var route: Route?
+
+    enum Route: Equatable {
+        case add(Item)
+        case row(id: ItemRowViewModel.ID, route: ItemRowViewModel.Route)
+    }
     
     init(
         inventory: IdentifiedArrayOf<ItemRowViewModel> = [],
-        itemToAdd: Item? = nil
+        route: Route? = nil
     ) {
         self.inventory = []
-        self.itemToAdd = itemToAdd
+        self.route = route
         
         for itemRowViewModel in inventory {
             bind(itemRowViewModel: itemRowViewModel)
@@ -27,7 +33,7 @@ final class InventoryViewModel: ObservableObject {
     func add(item: Item) {
         withAnimation {
             bind(itemRowViewModel: .init(item: item))
-            itemToAdd = nil
+            route = nil
         }
     }
     
@@ -38,17 +44,19 @@ final class InventoryViewModel: ObservableObject {
     }
     
     func cancelButtonTapped() {
-        self.itemToAdd = nil
+        route = nil
     }
  
     func addButtonTapped() {
-        self.itemToAdd = .init(
-            name: "", color: nil, status: .inStock(quantity: 1)
+        route = .add(
+            .init(name: "", color: nil, status: .inStock(quantity: 1))
         )
         
         Task { @MainActor in
             try await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
-            self.itemToAdd?.name = "Bluetooth Keyboard"
+            try (/Route.add).modify(&route) {
+                $0.name = "Bluetooth Keyboard"
+            }
         }
     }
     
@@ -63,6 +71,24 @@ final class InventoryViewModel: ObservableObject {
                 self?.add(item: item)
             }
         }
+        itemRowViewModel.$route
+            .map { [id = itemRowViewModel.id] route in
+                route.map { .row(id: id, route: $0) }
+            }
+            .removeDuplicates()
+            .dropFirst()
+            .assign(to: &$route)
+        
+        $route
+            .map { [id = itemRowViewModel.id] route in
+                guard
+                    case let .row(id: routeRowId, route: route) = route,
+                    id == routeRowId
+                else { return nil }
+                return route
+            }
+            .assign(to: &itemRowViewModel.$route)
+        
         self.inventory.append(itemRowViewModel)
     }
 }
@@ -80,7 +106,7 @@ struct InventoryView_Previews: PreviewProvider {
             .init(item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))),
             .init(item: Item(name: "Headphones", color: .green, status: .outOfStock(isOnBackOrder: false))),
           ],
-          itemToAdd: nil
+          route: nil
         )
       )
     }

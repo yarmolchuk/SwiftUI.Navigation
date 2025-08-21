@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CasePaths
 
 struct InventoryView: View {
     @ObservedObject var viewModel: InventoryViewModel
@@ -22,7 +23,9 @@ struct InventoryView: View {
             }
         }
         .navigationTitle("Inventory")
-        .sheet(unwrap: self.$viewModel.itemToAdd) { $itemToAdd in
+        .sheet(
+            unwrap: $viewModel.route.case(/InventoryViewModel.Route.add)
+        ) { $itemToAdd in
             NavigationView {
                 ItemView(item: $itemToAdd)
                     .navigationTitle("Add")

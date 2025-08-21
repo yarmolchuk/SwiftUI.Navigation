@@ -10,6 +10,7 @@ import Foundation
 final class ItemRowViewModel: Identifiable, ObservableObject {
     @Published var item: Item
     @Published var route: Route?
+    @Published var isSaving = false
 
     enum Route: Equatable {
       case deleteAlert
@@ -32,15 +33,23 @@ final class ItemRowViewModel: Identifiable, ObservableObject {
     
     func deleteConfirmationButtonTapped() {
         onDelete()
+        route = nil
     }
     
-    func editButtonTapped() {
-        route = .edit(item)
+    func setEditNavigation(isActive: Bool) {
+        self.route = isActive ? .edit(self.item) : nil
     }
     
     func edit(item: Item) {
-        self.item = item
-        self.route = nil
+        self.isSaving = true
+        
+        Task { @MainActor in
+            try await Task.sleep(nanoseconds: NSEC_PER_SEC)
+            
+            self.isSaving = false
+            self.item = item
+            self.route = nil
+        }
     }
     
     func cancelButtonTapped() {
