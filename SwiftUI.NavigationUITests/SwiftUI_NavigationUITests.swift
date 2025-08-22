@@ -2,7 +2,7 @@
 //  SwiftUI_NavigationUITests.swift
 //  SwiftUI.NavigationUITests
 //
-//  Created by Yarmolchuk on 11.08.2025.
+//  Created by Dmytro Yarmolchuk on 11.08.2025.
 //
 
 import XCTest

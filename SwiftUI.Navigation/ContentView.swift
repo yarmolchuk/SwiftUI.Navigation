@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  SwiftUI.Navigation
 //
-//  Created by Yarmolchuk on 11.08.2025.
+//  Created by Dmytro Yarmolchuk on 11.08.2025.
 //
 
 import SwiftUI
@@ -47,7 +47,7 @@ struct ContentView: View {
                     .init(item: keyboard)
                 ],
                 route: .add(
-                    Item(name: "MacBook 14", color: nil, status: .inStock(quantity: 1))
+                    .init(item: Item(name: "MacBook 14", color: nil, status: .inStock(quantity: 1)))
                 )
             ),
             selectedTab: .inventory

@@ -2,7 +2,7 @@
 //  ItemRowView.swift
 //  SwiftUI.Navigation
 //
-//  Created by Yarmolchuk on 17.08.2025.
+//  Created by Dmytro Yarmolchuk on 17.08.2025.
 //
 
 import SwiftUI
@@ -16,26 +16,26 @@ struct ItemRowView: View {
             unwrap: $viewModel.route,
             case: /ItemRowViewModel.Route.edit,
             onNavigate: viewModel.setEditNavigation(isActive:),
-            destination: { $item in
-                ItemView(item: $item)
+            destination: { $itemViewModel in
+                ItemView(viewModel: itemViewModel)
                     .navigationBarTitle("Edit")
                     .navigationBarBackButtonHidden(true)
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
                             Button("Cancel") {
-                                self.viewModel.cancelButtonTapped()
+                                viewModel.cancelButtonTapped()
                             }
                         }
                         ToolbarItem(placement: .primaryAction) {
                             HStack {
-                                if self.viewModel.isSaving {
+                                if viewModel.isSaving {
                                     ProgressView()
                                 }
                                 Button("Save") {
-                                    self.viewModel.edit(item: $item.wrappedValue)
+                                    viewModel.edit(item: itemViewModel.item)
                                 }
                             }
-                            .disabled(self.viewModel.isSaving)
+                            .disabled(viewModel.isSaving)
                         }
                     }
             }
@@ -86,11 +86,10 @@ struct ItemRowView: View {
                 }
             )
             .popover(
-                unwrap: self.$viewModel.route,
-                case: /ItemRowViewModel.Route.duplicate
-            ) { $item in
+                item: $viewModel.route.case(/ItemRowViewModel.Route.duplicate)
+            ) { itemViewModel in
                 NavigationView {
-                    ItemView(item: $item)
+                    ItemView(viewModel: itemViewModel)
                         .navigationBarTitle("Duplicate")
                         .toolbar {
                             ToolbarItem(placement: .cancellationAction) {
@@ -100,7 +99,7 @@ struct ItemRowView: View {
                             }
                             ToolbarItem(placement: .primaryAction) {
                                 Button("Add") {
-                                    self.viewModel.duplicate(item: item)
+                                    self.viewModel.duplicate(item: itemViewModel.item)
                                 }
                             }
                         }

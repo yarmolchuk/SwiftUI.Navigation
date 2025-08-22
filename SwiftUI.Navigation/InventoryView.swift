@@ -2,7 +2,7 @@
 //  InventoryView.swift
 //  SwiftUI.Navigation
 //
-//  Created by Yarmolchuk on 11.08.2025.
+//  Created by Dmytro Yarmolchuk on 11.08.2025.
 //
 
 import SwiftUI
@@ -23,21 +23,19 @@ struct InventoryView: View {
             }
         }
         .navigationTitle("Inventory")
-        .sheet(
-            unwrap: $viewModel.route.case(/InventoryViewModel.Route.add)
-        ) { $itemToAdd in
+        .sheet(unwrap: $viewModel.route.case(/InventoryViewModel.Route.add)) { $itemToAdd in
             NavigationView {
-                ItemView(item: $itemToAdd)
+                ItemView(viewModel: itemToAdd)
                     .navigationTitle("Add")
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
                             Button("Cancel") {
-                                self.viewModel.cancelButtonTapped()
+                                viewModel.cancelButtonTapped()
                             }
                         }
                         ToolbarItem(placement: .primaryAction) {
                             Button("Save") {
-                                self.viewModel.add(item: itemToAdd)
+                                viewModel.add(item: itemToAdd.item)
                             }
                         }
                     }

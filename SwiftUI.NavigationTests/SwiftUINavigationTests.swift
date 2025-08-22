@@ -2,7 +2,7 @@
 //  SwiftUINavigationTests.swift
 //  SwiftUI.NavigationTests
 //
-//  Created by Yarmolchuk on 18.08.2025.
+//  Created by Dmytro Yarmolchuk on 18.08.2025.
 //
 
 import XCTest
@@ -76,7 +76,7 @@ final class SwiftUINavigationTests: XCTestCase {
         try await Task.sleep(nanoseconds: NSEC_PER_SEC + 100 * NSEC_PER_MSEC)
         
         XCTAssertNil(viewModel.inventory[0].route)
-        XCTAssertNil(viewModel.route)        
+        XCTAssertNil(viewModel.route)
         XCTAssertEqual(viewModel.inventory[0].item, editedItem)
         XCTAssertEqual(viewModel.inventory[0].isSaving, false)
     }

@@ -2,7 +2,7 @@
 //  InventoryViewModel.swift
 //  SwiftUI.Navigation
 //
-//  Created by Yarmolchuk on 11.08.2025.
+//  Created by Dmytro Yarmolchuk on 11.08.2025.
 //
 
 import IdentifiedCollections
@@ -14,8 +14,24 @@ final class InventoryViewModel: ObservableObject {
     @Published var route: Route?
 
     enum Route: Equatable {
-        case add(Item)
+        case add(ItemViewModel)
         case row(id: ItemRowViewModel.ID, route: ItemRowViewModel.Route)
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            switch (lhs, rhs) {
+            case let (.add(lhs), .add(rhs)):
+                return lhs === rhs
+                
+            case let (
+                .row(id: lhsId, route: lhsRoute),
+                .row(id: rhsId, route: rhsRoute)
+            ):
+                return lhsId == rhsId && lhsRoute == rhsRoute
+                
+            case (.add, .row), (.row, .add):
+                return false
+            }
+        }
     }
     
     init(
@@ -49,13 +65,15 @@ final class InventoryViewModel: ObservableObject {
  
     func addButtonTapped() {
         route = .add(
-            .init(name: "", color: nil, status: .inStock(quantity: 1))
+            .init(
+                item: .init(name: "", color: nil, status: .inStock(quantity: 1))
+            )
         )
         
         Task { @MainActor in
             try await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
             try (/Route.add).modify(&route) {
-                $0.name = "Bluetooth Keyboard"
+                $0.item.name = "Bluetooth Keyboard"
             }
         }
     }

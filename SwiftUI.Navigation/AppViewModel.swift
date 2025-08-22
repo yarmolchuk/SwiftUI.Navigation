@@ -2,7 +2,7 @@
 //  AppViewModel.swift
 //  SwiftUI.Navigation
 //
-//  Created by Yarmolchuk on 11.08.2025.
+//  Created by Dmytro Yarmolchuk on 11.08.2025.
 //
 
 import Foundation
@@ -13,7 +13,7 @@ final class AppViewModel: ObservableObject {
     
     init(
         inventoryViewModel: InventoryViewModel,
-        selectedTab: Tab = .one
+        selectedTab: Tab = .inventory
     ) {
         self.inventoryViewModel = inventoryViewModel
         self.selectedTab = selectedTab

@@ -2,7 +2,7 @@
 //  File.swift
 //  SwiftUI.Navigation
 //
-//  Created by Yarmolchuk on 17.08.2025.
+//  Created by Dmytro Yarmolchuk on 17.08.2025.
 //
 
 import Foundation
@@ -11,17 +11,30 @@ final class ItemRowViewModel: Identifiable, ObservableObject {
     @Published var item: Item
     @Published var route: Route?
     @Published var isSaving = false
-
+    
     enum Route: Equatable {
-      case deleteAlert
-      case duplicate(Item)
-      case edit(Item)
+        case deleteAlert
+        case duplicate(ItemViewModel)
+        case edit(ItemViewModel)
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            switch (lhs, rhs) {
+            case (.deleteAlert, .deleteAlert):
+                return false
+            case let (.duplicate(lhs), .duplicate(rhs)):
+                return lhs === rhs
+            case let (.edit(lhs), .edit(rhs)):
+                return lhs === rhs
+            case (.deleteAlert, _), (.duplicate, _), (.edit, _):
+                return false
+            }
+        }
     }
     var id: Item.ID { self.item.id }
-
+    
     var onDelete: () -> Void = { }
     var onDuplicate: (Item) -> Void = { _ in }
-
+    
     init(item: Item, route: Route? = nil) {
         self.item = item
         self.route = route
@@ -37,7 +50,7 @@ final class ItemRowViewModel: Identifiable, ObservableObject {
     }
     
     func setEditNavigation(isActive: Bool) {
-        self.route = isActive ? .edit(self.item) : nil
+        route = isActive ? .edit(.init(item: item)) : nil
     }
     
     func edit(item: Item) {
@@ -57,12 +70,12 @@ final class ItemRowViewModel: Identifiable, ObservableObject {
     }
     
     func duplicateButtonTapped() {
-        route = .duplicate(item.duplicate())
+        route = .duplicate(.init(item: item.duplicate()))
     }
     
     func duplicate(item: Item) {
-       onDuplicate(item)
-       route = nil
+        onDuplicate(item)
+        route = nil
     }
 }
 
@@ -76,23 +89,23 @@ import SwiftUI
 import CasePaths
 
 extension Binding {
-  func isPresent<Enum, Case>(_ casePath: AnyCasePath<Enum, Case> ) -> Binding<Bool> where Value == Enum? {
-    .init(
-      get: {
-        if let wrappedValue = self.wrappedValue,
-           casePath.extract(from: wrappedValue) != nil {
-          return true
-        } else {
-          return false
-        }
-      },
-      set: { isPresented in
-        if !isPresented {
-          self.wrappedValue = nil
-        }
-      }
-    )
-  }
+    func isPresent<Enum, Case>(_ casePath: AnyCasePath<Enum, Case> ) -> Binding<Bool> where Value == Enum? {
+        .init(
+            get: {
+                if let wrappedValue = self.wrappedValue,
+                   casePath.extract(from: wrappedValue) != nil {
+                    return true
+                } else {
+                    return false
+                }
+            },
+            set: { isPresented in
+                if !isPresented {
+                    self.wrappedValue = nil
+                }
+            }
+        )
+    }
 }
 
 extension Binding {

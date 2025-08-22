@@ -2,7 +2,7 @@
 //  SwiftUIHelpers.swift
 //  SwiftUI.Navigation
 //
-//  Created by Yarmolchuk on 13.08.2025.
+//  Created by Dmytro Yarmolchuk on 13.08.2025.
 //
 
 import SwiftUI
