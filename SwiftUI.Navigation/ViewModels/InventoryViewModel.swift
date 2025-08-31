@@ -21,13 +21,8 @@ final class InventoryViewModel: ObservableObject {
             switch (lhs, rhs) {
             case let (.add(lhs), .add(rhs)):
                 return lhs === rhs
-                
-            case let (
-                .row(id: lhsId, route: lhsRoute),
-                .row(id: rhsId, route: rhsRoute)
-            ):
+            case let (.row(lhsId, lhsRoute), .row(rhsId, rhsRoute)):
                 return lhsId == rhsId && lhsRoute == rhsRoute
-                
             case (.add, .row), (.row, .add):
                 return false
             }
@@ -42,39 +37,7 @@ final class InventoryViewModel: ObservableObject {
         self.route = route
         
         for itemRowViewModel in inventory {
-            bind(itemRowViewModel: itemRowViewModel)
-        }
-    }
-    
-    func add(item: Item) {
-        withAnimation {
-            bind(itemRowViewModel: .init(item: item))
-            route = nil
-        }
-    }
-    
-    func delete(item: Item) {
-        withAnimation {
-            _ = inventory.remove(id: item.id)
-        }
-    }
-    
-    func cancelButtonTapped() {
-        route = nil
-    }
- 
-    func addButtonTapped() {
-        route = .add(
-            .init(
-                item: .init(name: "", color: nil, status: .inStock(quantity: 1))
-            )
-        )
-        
-        Task { @MainActor in
-            try await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
-            try (/Route.add).modify(&route) {
-                $0.item.name = "Bluetooth Keyboard"
-            }
+            self.bind(itemRowViewModel: itemRowViewModel)
         }
     }
     
@@ -91,7 +54,7 @@ final class InventoryViewModel: ObservableObject {
         }
         itemRowViewModel.$route
             .map { [id = itemRowViewModel.id] route in
-                route.map { .row(id: id, route: $0) }
+                route.map { Route.row(id: id, route: $0) }
             }
             .removeDuplicates()
             .dropFirst()
@@ -101,13 +64,46 @@ final class InventoryViewModel: ObservableObject {
             .map { [id = itemRowViewModel.id] route in
                 guard
                     case let .row(id: routeRowId, route: route) = route,
-                    id == routeRowId
+                    routeRowId == id
                 else { return nil }
                 return route
             }
+            .removeDuplicates()
             .assign(to: &itemRowViewModel.$route)
         
         inventory.append(itemRowViewModel)
+    }
+    
+    func delete(item: Item) {
+        withAnimation {
+            _ = inventory.remove(id: item.id)
+        }
+    }
+    
+    func add(item: Item) {
+        withAnimation {
+            bind(itemRowViewModel: .init(item: item))
+            route = nil
+        }
+    }
+    
+    func addButtonTapped() {
+        route = .add(
+            .init(
+                item: .init(name: "", color: nil, status: .inStock(quantity: 1))
+            )
+        )
+        
+        Task { @MainActor in
+            try await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
+            try (/Route.add).modify(&route) {
+                $0.item.name = "Bluetooth Keyboard"
+            }
+        }
+    }
+    
+    func cancelButtonTapped() {
+        route = nil
     }
 }
 

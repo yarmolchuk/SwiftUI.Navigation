@@ -20,7 +20,7 @@ final class ItemRowViewModel: Identifiable, ObservableObject {
         static func == (lhs: Self, rhs: Self) -> Bool {
             switch (lhs, rhs) {
             case (.deleteAlert, .deleteAlert):
-                return false
+                return true
             case let (.duplicate(lhs), .duplicate(rhs)):
                 return lhs === rhs
             case let (.edit(lhs), .edit(rhs)):
@@ -31,17 +31,15 @@ final class ItemRowViewModel: Identifiable, ObservableObject {
         }
     }
     
-    var id: Item.ID { self.item.id }
-    
-    var onDelete: () -> Void = { }
+    var onDelete: () -> Void = {}
     var onDuplicate: (Item) -> Void = { _ in }
     
+    var id: Item.ID { self.item.id }
+    
     init(
-        item: Item,
-        route: Route? = nil
+        item: Item
     ) {
         self.item = item
-        self.route = route
     }
     
     func deleteButtonTapped() {

@@ -32,11 +32,11 @@ final class AppViewModelTests: XCTestCase {
         let inventoryViewModel = InventoryViewModel()
         let appViewModel = AppViewModel(inventoryViewModel: inventoryViewModel)
         
-        appViewModel.selectedTab = .one
-        XCTAssertEqual(appViewModel.selectedTab, .one)
+        appViewModel.selectedTab = .dashboard
+        XCTAssertEqual(appViewModel.selectedTab, .dashboard)
         
-        appViewModel.selectedTab = .three
-        XCTAssertEqual(appViewModel.selectedTab, .three)
+        appViewModel.selectedTab = .settings
+        XCTAssertEqual(appViewModel.selectedTab, .settings)
     }
     
     func testInventoryViewModelUpdate() {
