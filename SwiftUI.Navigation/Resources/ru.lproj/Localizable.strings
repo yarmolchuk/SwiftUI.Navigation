@@ -1,0 +1,9 @@
+/* Tab Titles */
+"Dashboard" = "Панель";
+"Inventory" = "Инвентарь";
+"Settings" = "Настройки";
+
+/* Tab Accessibility Labels */
+"Dashboard tab, shows overview and statistics" = "Вкладка панели, показывает обзор и статистику";
+"Inventory tab, manage your items and products" = "Вкладка инвентаря, управление товарами и продуктами";
+"Settings tab, configure app preferences" = "Вкладка настроек, настройка параметров приложения";

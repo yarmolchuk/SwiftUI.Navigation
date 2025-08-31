@@ -1,0 +1,9 @@
+/* Tab Titles */
+"Dashboard" = "Dashboard";
+"Inventory" = "Inventory";
+"Settings" = "Settings";
+
+/* Tab Accessibility Labels */
+"Dashboard tab, shows overview and statistics" = "Dashboard tab, shows overview and statistics";
+"Inventory tab, manage your items and products" = "Inventory tab, manage your items and products";
+"Settings tab, configure app preferences" = "Settings tab, configure app preferences";
