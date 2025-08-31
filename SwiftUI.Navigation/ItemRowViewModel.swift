@@ -30,12 +30,16 @@ final class ItemRowViewModel: Identifiable, ObservableObject {
             }
         }
     }
+    
     var id: Item.ID { self.item.id }
     
     var onDelete: () -> Void = { }
     var onDuplicate: (Item) -> Void = { _ in }
     
-    init(item: Item, route: Route? = nil) {
+    init(
+        item: Item,
+        route: Route? = nil
+    ) {
         self.item = item
         self.route = route
     }

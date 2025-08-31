@@ -107,26 +107,45 @@ final class InventoryViewModel: ObservableObject {
             }
             .assign(to: &itemRowViewModel.$route)
         
-        self.inventory.append(itemRowViewModel)
+        inventory.append(itemRowViewModel)
     }
 }
 
 struct InventoryView_Previews: PreviewProvider {
-  static var previews: some View {
-    let keyboard = Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
-    
-    NavigationView {
-      InventoryView(
-        viewModel: .init(
-          inventory: [
-            .init(item: keyboard),
-            .init(item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))),
-            .init(item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))),
-            .init(item: Item(name: "Headphones", color: .green, status: .outOfStock(isOnBackOrder: false))),
-          ],
-          route: nil
+    static var previews: some View {
+        let keyboard = Item(
+            name: "Keyboard",
+            color: .blue,
+            status: .inStock(quantity: 100)
         )
-      )
+        let charger = Item(
+            name: "Charger",
+            color: .yellow,
+            status: .inStock(quantity: 20)
+        )
+        let phone = Item(
+            name: "Phone",
+            color: .green,
+            status: .outOfStock(isOnBackOrder: true)
+        )
+        let headphones = Item(
+            name: "Headphones",
+            color: .green,
+            status: .outOfStock(isOnBackOrder: false)
+        )
+        
+        NavigationView {
+            InventoryView(
+                viewModel: .init(
+                    inventory: [
+                        .init(item: keyboard),
+                        .init(item: charger),
+                        .init(item: phone),
+                        .init(item: headphones),
+                    ],
+                    route: nil
+                )
+            )
+        }
     }
-  }
 }

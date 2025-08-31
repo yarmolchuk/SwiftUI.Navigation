@@ -51,7 +51,6 @@ struct InventoryView: View {
             color: .blue,
             status: .inStock(quantity: 100)
         )
-        
         InventoryView(viewModel: .init())
     }
 }

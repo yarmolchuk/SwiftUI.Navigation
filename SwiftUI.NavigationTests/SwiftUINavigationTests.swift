@@ -18,32 +18,24 @@ final class SwiftUINavigationTests: XCTestCase {
             (/InventoryViewModel.Route.add).extract(from: XCTUnwrap(viewModel.route))
         )
         
-        viewModel.add(item: itemToAdd)
+        viewModel.add(item: itemToAdd.item)
         
         XCTAssertNil(viewModel.route)
         XCTAssertEqual(viewModel.inventory.count, 1)
-        XCTAssertEqual(viewModel.inventory[0].item, itemToAdd)
+        XCTAssertEqual(viewModel.inventory[0].item, itemToAdd.item)
     }
     
-    func testDeleteItem() throws {
+    func testDeleteItem() {
         let viewModel = InventoryViewModel(
             inventory: [
-                .init(
-                    item: Item(
-                        name: "Keyboard",
-                        color: .red,
-                        status: .inStock(quantity: 1)
-                    )
-                )
+                .init(item: .init(name: "Keyboard", color: .red, status: .inStock(quantity: 1)))
             ]
         )
+        
         viewModel.inventory[0].deleteButtonTapped()
-    
+        
         XCTAssertEqual(viewModel.inventory[0].route, .deleteAlert)
-        XCTAssertEqual(
-            viewModel.route,
-            .row(id: viewModel.inventory[0].id, route: .deleteAlert)
-        )
+        XCTAssertEqual(viewModel.route, .row(id: viewModel.inventory[0].item.id, route: .deleteAlert))
         
         viewModel.inventory[0].deleteConfirmationButtonTapped()
         
@@ -68,7 +60,7 @@ final class SwiftUINavigationTests: XCTestCase {
         
         var editedItem = item
         editedItem.color = .blue
-        viewModel.inventory[0].route = .edit(editedItem)
+        viewModel.inventory[0].route = .edit( .init(item: editedItem))
         viewModel.inventory[0].edit(item: editedItem)
         
         XCTAssertEqual(viewModel.inventory[0].isSaving, true)

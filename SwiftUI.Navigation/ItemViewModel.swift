@@ -34,6 +34,7 @@ final class ItemViewModel: Identifiable, ObservableObject {
     @MainActor
     func loadColors() async {
         try? await Task.sleep(nanoseconds: NSEC_PER_SEC)
+        
         newColors = [
             .init(name: "Pink", red: 1, green: 0.7, blue: 0.7)
         ]
