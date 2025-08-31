@@ -117,7 +117,16 @@ struct ContentView: View {
     }
 }
 
-#Preview {
+#Preview("Dashboard Tab") {
+    ContentView(
+        viewModel: .init(
+            inventoryViewModel: .init(),
+            selectedTab: .dashboard
+        )
+    )
+}
+
+#Preview("Inventory Tab") {
     let keyboard = Item(
         name: "Keyboard",
         color: .blue,
@@ -135,15 +144,6 @@ struct ContentView: View {
                 )
             ),
             selectedTab: .inventory
-        )
-    )
-}
-
-#Preview("Dashboard Tab") {
-    ContentView(
-        viewModel: .init(
-            inventoryViewModel: .init(),
-            selectedTab: .dashboard
         )
     )
 }
