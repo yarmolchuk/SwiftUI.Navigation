@@ -130,10 +130,9 @@ struct ContentView: View {
                 inventory: [
                     .init(item: keyboard)
                 ],
-                route: nil
-//                        .add(
-//                    .init(item: Item(name: "MacBook 14", color: nil, status: .inStock(quantity: 1)))
-//                )
+                route: .add(
+                    .init(item: Item(name: "MacBook 14", color: nil, status: .inStock(quantity: 1)))
+                )
             ),
             selectedTab: .inventory
         )
